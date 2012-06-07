@@ -11,6 +11,11 @@
 #define PING_ECHO_PIN          12
 #define PING_SERVO_PIN         11
 
+#define MOTOR_A_1_PIN          10
+#define MOTOR_A_2_PIN          9
+#define MOTOR_B_1_PIN          6
+#define MOTOR_B_2_PIN          5
+
 #define ANGLE_COUNT 5
 
 #define MODE_IDLE
@@ -33,6 +38,17 @@ long distance = 0;
 
 
 void setup(){
+  
+  pinMode(MOTOR_A_1_PIN, OUTPUT);
+  pinMode(MOTOR_A_2_PIN, OUTPUT);
+  pinMode(MOTOR_B_1_PIN, OUTPUT);
+  pinMode(MOTOR_B_2_PIN, OUTPUT);
+  
+  analogWrite(MOTOR_A_1_PIN, 0);
+  analogWrite(MOTOR_A_2_PIN, 0);
+  analogWrite(MOTOR_B_1_PIN, 0);
+  analogWrite(MOTOR_B_2_PIN, 0);
+  
   robot.run();
   robot.aquire();
   lcd.init();                      // initialize the lcd 
@@ -40,7 +56,7 @@ void setup(){
   lcd.print("Initilizing...");
   delay(100);
   Serial.begin(9600);
-  pingServo.attach(9);
+  pingServo.attach(PING_SERVO_PIN);
   pingServo.write(90);
   delay(100);
   
@@ -58,7 +74,8 @@ void loop(){
   getDistance(angle);
   
   
-  //angle++;
+ // angle++;
+  angle = 2;
   if(angle > ANGLE_COUNT){
     angle = 0;
   }
@@ -84,6 +101,15 @@ void getDistance(int index){
    lcd.print("Angle:    ");
    lcd.setCursor(7,1);
    lcd.print(angles[angle]);
+   
+   if(distance < 2000){
+     
+    analogWrite(MOTOR_B_2_PIN, 100);
+    analogWrite(MOTOR_A_2_PIN, 100);
+   }else{
+     analogWrite(MOTOR_B_2_PIN, 200);
+    analogWrite(MOTOR_A_2_PIN,  200);
+   }
 }
 
 void printScreen(){
